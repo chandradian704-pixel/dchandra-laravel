@@ -1,4 +1,3 @@
-{{-- resources/views/surat-masuk/show.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Detail Surat Keluar')
@@ -11,27 +10,27 @@
 
     <p>
         <strong>Nomor Surat:</strong>
-        {{ $surat['nomor_surat'] }}
+        {{ $surat->nomor_surat }}
     </p>
 
     <p>
         <strong>Tanggal:</strong>
-        {{ $surat['tanggal'] }}
+        {{ $surat->tanggal->format('d-m-Y') }}
     </p>
 
     <p>
-        <strong>Pengirim:</strong>
-        {{ $surat['pengirim'] }}
+        <strong>Tujuan:</strong>
+        {{ $surat->tujuan }}
     </p>
 
     <p>
         <strong>Perihal:</strong>
-        {{ $surat['perihal'] }}
+        {{ $surat->perihal }}
     </p>
 
     <p>
         <strong>Keterangan:</strong>
-        {{ $surat['keterangan'] }}
+        {{ $surat->keterangan ?? '-' }}
     </p>
 
 @else
