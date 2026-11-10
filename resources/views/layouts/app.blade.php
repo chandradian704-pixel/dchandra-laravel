@@ -19,6 +19,18 @@
         |
         <a href="{{ route('surat-keluar.index') }}">Surat Keluar</a>
     </nav>
+    
+    <!-- Bagian Autentikasi yang ditambahkan -->
+    @auth
+        <div style="margin-top: 5px;">
+            <span>Masuk sebagai: {{ auth()->user()->name }}</span>
+            <form method="POST" action="{{ route('logout') }}" style="display:inline; margin-left: 10px;">
+                @csrf
+                <button type="submit">Keluar</button>
+            </form>
+        </div>
+    @endauth
+
     <hr>
 </header>
 

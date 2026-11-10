@@ -1,3 +1,4 @@
+{{-- resources/views/surat-masuk/index.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Surat Masuk')
@@ -10,11 +11,12 @@
     <p>{{ session('success') }}</p>
 @endif
 
+@can('manage-letters')
 <a href="{{ route('surat-masuk.create') }}">
     Tambah Surat Masuk
 </a>
-
 <br><br>
+@endcan
 
 <table border="1" cellpadding="10">
 
@@ -41,30 +43,32 @@
                 <td>{{ $surat->perihal }}</td>
 
                 <td>
-    <a href="{{ route('surat-masuk.show', $surat->id) }}">
-        Detail
-    </a>
+                    <a href="{{ route('surat-masuk.show', $surat->id) }}">
+                        Detail
+                    </a>
 
-    |
+                    @can('manage-letters')
+                    |
 
-    <a href="{{ route('surat-masuk.edit', $surat->id) }}">
-        Edit
-    </a>
+                    <a href="{{ route('surat-masuk.edit', $surat->id) }}">
+                        Edit
+                    </a>
 
-    |
+                    |
 
-    <form action="{{ route('surat-masuk.destroy', $surat->id) }}"
-          method="POST"
-          style="display:inline;">
-        @csrf
-        @method('DELETE')
+                    <form action="{{ route('surat-masuk.destroy', $surat->id) }}"
+                          method="POST"
+                          style="display:inline;">
+                        @csrf
+                        @method('DELETE')
 
-        <button type="submit"
-                onclick="return confirm('Yakin ingin menghapus surat ini?')">
-            Hapus
-        </button>
-    </form>
-</td>
+                        <button type="submit"
+                                onclick="return confirm('Yakin ingin menghapus surat ini?')">
+                            Hapus
+                        </button>
+                    </form>
+                    @endcan
+                </td>
             </tr>
 
         @empty
