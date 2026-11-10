@@ -1,3 +1,4 @@
+{{-- resources/views/surat-keluar/index.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'Surat Keluar')
@@ -10,11 +11,12 @@
     <p style="color: green;">{{ session('success') }}</p>
 @endif
 
+@can('manage-letters')
 <a href="{{ route('surat-keluar.create') }}">
     Tambah Surat Keluar
 </a>
-
 <br><br>
+@endcan
 
 <table border="1" cellpadding="10">
 
@@ -45,6 +47,7 @@
                         Detail
                     </a>
 
+                    @can('manage-letters')
                     |
 
                     <a href="{{ route('surat-keluar.edit', $surat->id) }}">
@@ -64,6 +67,7 @@
                             Hapus
                         </button>
                     </form>
+                    @endcan
                 </td>
             </tr>
 
