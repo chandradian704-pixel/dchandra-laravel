@@ -19,21 +19,21 @@ Route::middleware('auth')->group(function () {
 
     // Surat Masuk
     Route::resource('surat-masuk', SuratMasukController::class)
-        ->only(['index', 'show'])
-        ->parameters(['surat-masuk' => 'id']);
-
-    Route::resource('surat-masuk', SuratMasukController::class)
         ->except(['index', 'show'])
         ->parameters(['surat-masuk' => 'id'])
         ->middleware('can:manage-letters');
 
-    // Surat Keluar
-    Route::resource('surat-keluar', SuratKeluarController::class)
+    Route::resource('surat-masuk', SuratMasukController::class)
         ->only(['index', 'show'])
-        ->parameters(['surat-keluar' => 'id']);
+        ->parameters(['surat-masuk' => 'id']);
 
+    // Surat Keluar
     Route::resource('surat-keluar', SuratKeluarController::class)
         ->except(['index', 'show'])
         ->parameters(['surat-keluar' => 'id'])
         ->middleware('can:manage-letters');
+
+    Route::resource('surat-keluar', SuratKeluarController::class)
+        ->only(['index', 'show'])
+        ->parameters(['surat-keluar' => 'id']);
 });
