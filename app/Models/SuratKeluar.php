@@ -3,20 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SuratKeluar extends Model
 {
-    protected $table = 'surat_keluar'; // Sesuaikan dengan nama tabel surat keluar di database Anda
+    protected $table = 'surat_keluar';
 
     protected $fillable = [
         'nomor_surat',
         'tanggal',
-        'tujuan', // Perhatikan: menggunakan 'tujuan' bukan 'pengirim'
+        'tujuan',
         'perihal',
         'keterangan',
+        'category_id',
+        'lampiran',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
     ];
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

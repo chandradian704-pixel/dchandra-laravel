@@ -37,7 +37,6 @@
         @endcan
     </div>
 
-
     {{-- NOTIFIKASI --}}
     @if (session('success'))
         <div class="flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700">
@@ -49,6 +48,73 @@
         </div>
     @endif
 
+    {{-- PENCARIAN DAN FILTER --}}
+    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+
+        <form action="{{ route('surat-keluar.index') }}" method="GET"
+              class="grid gap-4 md:grid-cols-3">
+
+            {{-- PENCARIAN --}}
+            <div class="md:col-span-2">
+                <label for="q" class="mb-2 block text-sm font-semibold text-slate-700">
+                    Cari Surat Keluar
+                </label>
+
+                <input
+                    type="text"
+                    id="q"
+                    name="q"
+                    value="{{ request('q') }}"
+                    placeholder="Cari nomor surat, tujuan, atau perihal..."
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10"
+                >
+            </div>
+
+            {{-- FILTER KATEGORI --}}
+            <div>
+                <label for="category_id" class="mb-2 block text-sm font-semibold text-slate-700">
+                    Filter Kategori
+                </label>
+
+                <select
+                    id="category_id"
+                    name="category_id"
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10"
+                >
+                    <option value="">Semua Kategori</option>
+
+                    @foreach ($categories as $category)
+                        <option
+                            value="{{ $category->id }}"
+                            {{ request('category_id') == $category->id ? 'selected' : '' }}
+                        >
+                            {{ $category->nama }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- TOMBOL --}}
+            <div class="flex flex-wrap items-center gap-3 md:col-span-3">
+
+                <button
+                    type="submit"
+                    class="rounded-xl bg-teal-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-teal-700"
+                >
+                    Cari / Filter
+                </button>
+
+                <a
+                    href="{{ route('surat-keluar.index') }}"
+                    class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
+                >
+                    Reset
+                </a>
+
+            </div>
+
+        </form>
+    </div>
 
     {{-- TABEL SURAT KELUAR --}}
     <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -65,14 +131,13 @@
             </div>
 
             <span class="w-fit rounded-lg bg-teal-50 px-3 py-2 text-xs font-semibold text-teal-700">
-                Total: {{ $suratKeluar->count() }} surat
+                Total: {{ $suratKeluar->total() }} surat
             </span>
         </div>
 
-
         <div class="overflow-x-auto">
 
-            <table class="w-full min-w-[850px] text-left text-sm">
+            <table class="w-full min-w-[1100px] text-left text-sm">
 
                 <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
                     <tr>
@@ -80,11 +145,12 @@
                         <th class="px-5 py-4 font-bold">Nomor Surat</th>
                         <th class="px-5 py-4 font-bold">Tanggal</th>
                         <th class="px-5 py-4 font-bold">Tujuan</th>
+                        <th class="px-5 py-4 font-bold">Kategori</th>
                         <th class="px-5 py-4 font-bold">Perihal</th>
+                        <th class="px-5 py-4 font-bold">Lampiran</th>
                         <th class="px-5 py-4 text-center font-bold">Aksi</th>
                     </tr>
                 </thead>
-
 
                 <tbody class="divide-y divide-slate-100">
 
@@ -93,7 +159,7 @@
                         <tr class="transition hover:bg-slate-50/80">
 
                             <td class="px-5 py-4 text-slate-500">
-                                {{ $loop->iteration }}
+                                {{ $suratKeluar->firstItem() + $loop->index }}
                             </td>
 
                             <td class="px-5 py-4 font-semibold text-slate-800">
@@ -108,8 +174,37 @@
                                 {{ $surat->tujuan }}
                             </td>
 
+                            <td class="px-5 py-4">
+                                @if ($surat->category)
+                                    <span class="rounded-lg bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-700">
+                                        {{ $surat->category->nama }}
+                                    </span>
+                                @else
+                                    <span class="text-xs text-slate-400">
+                                        Belum dikategorikan
+                                    </span>
+                                @endif
+                            </td>
+
                             <td class="px-5 py-4 text-slate-700">
                                 {{ $surat->perihal }}
+                            </td>
+
+                            <td class="px-5 py-4">
+                                @if ($surat->lampiran)
+                                    <a
+                                        href="{{ asset('storage/' . $surat->lampiran) }}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="text-xs font-semibold text-teal-600 hover:text-teal-700"
+                                    >
+                                        Lihat Lampiran
+                                    </a>
+                                @else
+                                    <span class="text-xs text-slate-400">
+                                        Tidak ada
+                                    </span>
+                                @endif
                             </td>
 
                             <td class="px-5 py-4">
@@ -149,7 +244,7 @@
                     @empty
 
                         <tr>
-                            <td colspan="6" class="px-6 py-16 text-center">
+                            <td colspan="8" class="px-6 py-16 text-center">
 
                                 <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
@@ -158,11 +253,11 @@
                                 </div>
 
                                 <p class="mt-4 font-semibold text-slate-700">
-                                    Belum Ada Data Surat Keluar
+                                    Data Surat Keluar Tidak Ditemukan
                                 </p>
 
                                 <p class="mt-1 text-sm text-slate-400">
-                                    Data surat keluar belum tersedia dalam sistem.
+                                    Tidak ada data yang sesuai dengan pencarian atau filter.
                                 </p>
 
                             </td>
@@ -175,6 +270,13 @@
             </table>
 
         </div>
+
+        {{-- PAGINATION --}}
+        @if ($suratKeluar->hasPages())
+            <div class="border-t border-slate-100 bg-white px-6 py-4">
+                {{ $suratKeluar->links() }}
+            </div>
+        @endif
 
         <div class="border-t border-slate-100 bg-slate-50/50 px-6 py-4">
             <p class="text-xs text-slate-500">

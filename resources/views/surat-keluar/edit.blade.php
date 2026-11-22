@@ -36,7 +36,11 @@
             </p>
         </div>
 
-        <form action="{{ route('surat-keluar.update', $surat->id) }}" method="POST">
+        <form
+            action="{{ route('surat-keluar.update', $surat->id) }}"
+            method="POST"
+            enctype="multipart/form-data"
+        >
             @csrf
             @method('PUT')
 
@@ -105,6 +109,34 @@
 
                 </div>
 
+                {{-- KATEGORI --}}
+                <div>
+                    <label for="category_id" class="mb-2 block text-sm font-semibold text-slate-700">
+                        Kategori Surat
+                    </label>
+
+                    <select
+                        id="category_id"
+                        name="category_id"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10"
+                    >
+                        <option value="">Pilih kategori surat</option>
+
+                        @foreach ($categories as $category)
+                            <option
+                                value="{{ $category->id }}"
+                                {{ old('category_id', $surat->category_id) == $category->id ? 'selected' : '' }}
+                            >
+                                {{ $category->nama }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    @error('category_id')
+                        <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 {{-- PERIHAL --}}
                 <div>
                     <label for="perihal" class="mb-2 block text-sm font-semibold text-slate-700">
@@ -139,6 +171,47 @@
                     >{{ old('keterangan', $surat->keterangan) }}</textarea>
 
                     @error('keterangan')
+                        <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- LAMPIRAN LAMA --}}
+                @if ($surat->lampiran)
+                    <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                        <p class="mb-2 text-sm font-semibold text-slate-700">
+                            Lampiran Saat Ini
+                        </p>
+
+                        <a
+                            href="{{ asset('storage/' . $surat->lampiran) }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-sm font-medium text-teal-600 hover:text-teal-700"
+                        >
+                            Lihat lampiran saat ini
+                        </a>
+                    </div>
+                @endif
+
+                {{-- LAMPIRAN BARU --}}
+                <div>
+                    <label for="lampiran" class="mb-2 block text-sm font-semibold text-slate-700">
+                        Ganti Lampiran
+                    </label>
+
+                    <input
+                        type="file"
+                        id="lampiran"
+                        name="lampiran"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition file:mr-4 file:rounded-lg file:border-0 file:bg-teal-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-teal-700 hover:file:bg-teal-100"
+                    >
+
+                    <p class="mt-2 text-xs text-slate-400">
+                        Kosongkan jika tidak ingin mengganti lampiran. Format PDF, JPG, JPEG, atau PNG. Maksimal 2 MB.
+                    </p>
+
+                    @error('lampiran')
                         <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
                     @enderror
                 </div>

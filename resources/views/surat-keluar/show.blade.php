@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title', 'Detail Surat Keluar')
@@ -81,6 +82,25 @@
                     </p>
                 </div>
 
+                {{-- KATEGORI --}}
+                <div class="grid gap-2 px-6 py-5 sm:grid-cols-3">
+                    <p class="text-sm font-medium text-slate-500">
+                        Kategori Surat
+                    </p>
+
+                    <div class="sm:col-span-2">
+                        @if ($surat->category)
+                            <span class="inline-block rounded-lg bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-700">
+                                {{ $surat->category->nama }}
+                            </span>
+                        @else
+                            <p class="text-sm text-slate-400">
+                                Belum dikategorikan
+                            </p>
+                        @endif
+                    </div>
+                </div>
+
                 <div class="grid gap-2 px-6 py-5 sm:grid-cols-3">
                     <p class="text-sm font-medium text-slate-500">
                         Perihal
@@ -99,6 +119,34 @@
                     <p class="whitespace-pre-line text-sm leading-relaxed text-slate-700 sm:col-span-2">
                         {{ $surat->keterangan ?? '-' }}
                     </p>
+                </div>
+
+                {{-- LAMPIRAN --}}
+                <div class="grid gap-2 px-6 py-5 sm:grid-cols-3">
+                    <p class="text-sm font-medium text-slate-500">
+                        Lampiran
+                    </p>
+
+                    <div class="sm:col-span-2">
+                        @if ($surat->lampiran)
+                            <a
+                                href="{{ asset('storage/' . $surat->lampiran) }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center gap-2 rounded-lg bg-teal-50 px-4 py-2 text-sm font-semibold text-teal-700 transition hover:bg-teal-100"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z" />
+                                </svg>
+
+                                Lihat / Unduh Lampiran
+                            </a>
+                        @else
+                            <p class="text-sm text-slate-400">
+                                Tidak ada lampiran.
+                            </p>
+                        @endif
+                    </div>
                 </div>
 
             </div>

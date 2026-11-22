@@ -13,4 +13,9 @@ class Category extends Model
     {
         return $this->hasMany(SuratMasuk::class);
     }
+
+    public function suratKeluar(): HasMany
+    {
+        return $this->hasMany(SuratKeluar::class);
+    }
 }
