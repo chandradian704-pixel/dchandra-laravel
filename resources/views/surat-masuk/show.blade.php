@@ -76,6 +76,15 @@
 
                 <div class="grid gap-2 px-6 py-5 sm:grid-cols-3">
                     <p class="text-sm font-medium text-slate-500">
+                        Kategori
+                    </p>
+                    <p class="text-sm font-semibold text-slate-800 sm:col-span-2">
+                        {{ $surat->category?->nama ?? 'Tanpa kategori' }}
+                    </p>
+                </div>
+
+                <div class="grid gap-2 px-6 py-5 sm:grid-cols-3">
+                    <p class="text-sm font-medium text-slate-500">
                         Perihal
                     </p>
                     <p class="text-sm font-semibold text-slate-800 sm:col-span-2">
@@ -91,6 +100,19 @@
                         {{ $surat->keterangan ?? '-' }}
                     </p>
                 </div>
+
+                @if ($surat->lampiran)
+                    <div class="grid gap-2 px-6 py-5 sm:grid-cols-3">
+                        <p class="text-sm font-medium text-slate-500">
+                            Lampiran
+                        </p>
+                        <p class="text-sm font-semibold sm:col-span-2">
+                            <a href="{{ asset('storage/' . $surat->lampiran) }}" target="_blank" rel="noopener" class="text-teal-600 underline hover:text-teal-700">
+                                Lihat lampiran
+                            </a>
+                        </p>
+                    </div>
+                @endif
 
             </div>
 

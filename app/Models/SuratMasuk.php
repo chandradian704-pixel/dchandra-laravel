@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SuratMasuk extends Model
 {
@@ -14,9 +15,16 @@ class SuratMasuk extends Model
         'pengirim',
         'perihal',
         'keterangan',
+        'category_id',
+        'lampiran',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
     ];
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

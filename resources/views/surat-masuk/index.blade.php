@@ -79,10 +79,52 @@
         </div>
 
 
+        {{-- FORM PENCARIAN DAN FILTER KATEGORI --}}
+        <div class="border-b border-slate-100 bg-slate-50/50 px-6 py-4">
+            <form method="GET" action="{{ route('surat-masuk.index') }}" class="flex flex-col gap-3 md:flex-row md:items-center">
+                <input
+                    type="text"
+                    name="q"
+                    value="{{ request('q') }}"
+                    placeholder="Nomor, pengirim, atau perihal"
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 md:flex-1"
+                >
+
+                <select
+                    name="category_id"
+                    class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 md:w-56"
+                >
+                    <option value="">Semua kategori</option>
+                    @foreach ($categories as $kategori)
+                        <option value="{{ $kategori->id }}" @selected(request('category_id') == $kategori->id)>
+                            {{ $kategori->nama }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <div class="flex items-center gap-2">
+                    <button
+                        type="submit"
+                        class="rounded-xl bg-teal-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-700"
+                    >
+                        Cari / Filter
+                    </button>
+
+                    <a
+                        href="{{ route('surat-masuk.index') }}"
+                        class="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
+                    >
+                        Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+
+
         {{-- ISI TABEL --}}
         <div class="overflow-x-auto">
 
-            <table class="w-full min-w-[850px] text-left text-sm">
+            <table class="w-full min-w-[950px] text-left text-sm">
 
                 <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500">
 
@@ -91,6 +133,7 @@
                         <th class="px-5 py-4 font-bold">Nomor Surat</th>
                         <th class="px-5 py-4 font-bold">Tanggal</th>
                         <th class="px-5 py-4 font-bold">Pengirim</th>
+                        <th class="px-5 py-4 font-bold">Kategori</th>
                         <th class="px-5 py-4 font-bold">Perihal</th>
                         <th class="px-5 py-4 text-center font-bold">Aksi</th>
                     </tr>
@@ -105,7 +148,7 @@
                         <tr class="transition hover:bg-slate-50/80">
 
                             <td class="px-5 py-4 font-semibold text-slate-400">
-                                {{ $loop->iteration }}
+                                {{ $suratMasuk->firstItem() + $loop->index }}
                             </td>
 
                             <td class="px-5 py-4">
@@ -120,6 +163,10 @@
 
                             <td class="px-5 py-4 font-medium text-slate-700">
                                 {{ $surat->pengirim }}
+                            </td>
+
+                            <td class="whitespace-nowrap px-5 py-4 text-slate-600">
+                                {{ $surat->category?->nama ?? 'Tanpa kategori' }}
                             </td>
 
                             <td class="max-w-xs px-5 py-4 text-slate-600">
@@ -170,7 +217,7 @@
                     @empty
 
                         <tr>
-                            <td colspan="6" class="px-5 py-16 text-center">
+                            <td colspan="7" class="px-5 py-16 text-center">
 
                                 <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-2xl text-slate-400">
                                     ✉
@@ -196,8 +243,8 @@
         </div>
 
 
-        {{-- FOOTER TABEL --}}
-        <div class="border-t border-slate-100 bg-slate-50/70 px-6 py-4">
+        {{-- FOOTER TABEL & PAGINATION --}}
+        <div class="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/70 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
 
             <p class="text-xs text-slate-500">
                 Menampilkan
@@ -206,6 +253,26 @@
                 </span>
                 data surat pada halaman ini.
             </p>
+
+            <div class="flex items-center gap-3 text-xs font-semibold text-slate-600">
+                @if ($suratMasuk->previousPageUrl())
+                    <a href="{{ $suratMasuk->previousPageUrl() }}"
+                       class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-slate-700 transition hover:bg-slate-100">
+                        Sebelumnya
+                    </a>
+                @endif
+
+                <span>
+                    Halaman {{ $suratMasuk->currentPage() }} dari {{ $suratMasuk->lastPage() }}
+                </span>
+
+                @if ($suratMasuk->nextPageUrl())
+                    <a href="{{ $suratMasuk->nextPageUrl() }}"
+                       class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-slate-700 transition hover:bg-slate-100">
+                        Berikutnya
+                    </a>
+                @endif
+            </div>
 
         </div>
 

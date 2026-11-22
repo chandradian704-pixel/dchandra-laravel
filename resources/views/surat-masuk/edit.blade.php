@@ -35,7 +35,7 @@
             </p>
         </div>
 
-        <form action="{{ route('surat-masuk.update', $surat->id) }}" method="POST">
+        <form action="{{ route('surat-masuk.update', $surat->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -104,6 +104,30 @@
 
                 </div>
 
+                {{-- KATEGORI --}}
+                <div>
+                    <label for="category_id" class="mb-2 block text-sm font-semibold text-slate-700">
+                        Kategori
+                    </label>
+
+                    <select
+                        id="category_id"
+                        name="category_id"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10"
+                    >
+                        <option value="">-- Tanpa kategori --</option>
+                        @foreach ($categories as $kategori)
+                            <option value="{{ $kategori->id }}" @selected(old('category_id', $surat->category_id ?? '') == $kategori->id)>
+                                {{ $kategori->nama }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    @error('category_id')
+                        <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 {{-- PERIHAL --}}
                 <div>
                     <label for="perihal" class="mb-2 block text-sm font-semibold text-slate-700">
@@ -138,6 +162,34 @@
                     >{{ old('keterangan', $surat->keterangan) }}</textarea>
 
                     @error('keterangan')
+                        <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- LAMPIRAN --}}
+                <div>
+                    <label for="lampiran" class="mb-2 block text-sm font-semibold text-slate-700">
+                        Lampiran (PDF/JPG/PNG, maks. 2 MB)
+                    </label>
+
+                    @if ($surat->lampiran)
+                        <p class="mb-2 text-xs text-slate-600">
+                            Lampiran saat ini:
+                            <a href="{{ asset('storage/' . $surat->lampiran) }}" target="_blank" rel="noopener" class="font-semibold text-teal-600 underline hover:text-teal-700">
+                                Lihat lampiran
+                            </a>
+                        </p>
+                    @endif
+
+                    <input
+                        type="file"
+                        id="lampiran"
+                        name="lampiran"
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-700 file:mr-4 file:rounded-lg file:border-0 file:bg-teal-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-teal-700 hover:file:bg-teal-100"
+                    >
+
+                    @error('lampiran')
                         <p class="mt-2 text-xs font-medium text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
